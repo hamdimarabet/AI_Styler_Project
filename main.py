@@ -7,6 +7,9 @@ from shopify_api import get_products_by_tags  # import your Shopify API code
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
+# Ensure upload folder exists for both local and Render
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 user_profile = {"morphotype": None, "head_shape": None}
 
 # Define mapping of morphotype to product tags
@@ -63,7 +66,6 @@ def chat():
     response = chat_with_assistant(user_message, morphotype, head_shape)
     return jsonify({"response": response})
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # ✅ use Render's assigned port
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    app.run(host="0.0.0.0", port=port, debug=True)
+# ✅ Local development only
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
